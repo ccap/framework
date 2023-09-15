@@ -989,16 +989,9 @@ class LiftServlet extends Loggable {
     logIfDump(request, resp)
 
     def insureField(headers: List[(String, String)], toInsure: List[(String, String)]): List[(String, String)] = {
-      val org = Map(headers: _*)
-
-      toInsure.foldLeft(org) {
-        case (map, (key, value)) =>
-          if (map.contains(key)) map
-          else map + (key -> value)
-      }.toList
-
+      val keep = toInsure.filter { case (name1, _) => !headers.exists { case (name2, _) => name1 == name2 } }
+      headers ++ keep
     }
-
 
     val len = resp.size
     // insure that certain header fields are set
