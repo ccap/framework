@@ -42,14 +42,23 @@ object Dependencies {
   lazy val paranamer              = "com.thoughtworks.paranamer" % "paranamer"          % "2.8"
   lazy val scalajpa               = "org.scala-libs"             % "scalajpa"           % "1.5"     cross CVMappingAll
   lazy val scalap: ModuleMap      = "org.scala-lang"             % "scalap"             % _
-  lazy val scala_compiler: ModuleMap = "org.scala-lang"          % "scala-compiler"     % _
+
   lazy val scalaz7_core           = "org.scalaz"                 % "scalaz-core"        % "7.2.24"   cross CVMappingAll
   lazy val squeryl                = "org.squeryl"                % "squeryl"            % "0.9.5-7"   cross CVMappingAll
+
   lazy val slf4j_api              = "org.slf4j"                  % "slf4j-api"          % slf4jVersion
   lazy val scala_xml              = "org.scala-lang.modules"     %% "scala-xml"         % "2.1.0"
   lazy val rhino                  = "org.mozilla"                % "rhino"              % "1.7.10"
   lazy val scala_parser           = "org.scala-lang.modules"     %% "scala-parser-combinators" % "1.0.4"
   lazy val xerces                 = "xerces" % "xercesImpl" % "2.11.0"
+
+  lazy val scala_compiler: ModuleMap = (version: String) => {
+    if (version.startsWith("2")) {
+      "org.scala-lang"         % "scala-compiler"    % version
+    } else {
+      "org.scala-lang"         % "scala3-compiler_3" % version
+    }
+  }
 
   // Aliases
   lazy val mongo_driver = mongo_java_driver

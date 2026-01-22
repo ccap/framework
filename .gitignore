@@ -1,3 +1,4 @@
+.bsp/
 # use glob syntax.
 syntax: glob
 *.ser

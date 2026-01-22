@@ -70,20 +70,21 @@ sealed trait Schedule extends Loggable {
     
 
   /** The underlying <code>java.util.concurrent.ScheduledExecutor</code> */
-  private var service: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(TF)
+  @volatile var buildService: () => ScheduledExecutorService = () => Executors.newSingleThreadScheduledExecutor(TF)
+
+  private var service: ScheduledExecutorService = buildService()
 
   private var pool = buildExecutor()
 
   /**
    * Re-create the underlying <code>SingleThreadScheduledExecutor</code>
    */
-  def restart: Unit = synchronized
-  { if ((service eq null) || service.isShutdown)
-    service = Executors.newSingleThreadScheduledExecutor(TF) 
-   if ((pool eq null) || pool.isShutdown)
-     pool = buildExecutor()
- }
-
+  def restart: Unit = synchronized { if ((service eq null) || service.isShutdown)
+    if ((service eq null) || service.isShutdown)
+      service = buildService()
+    if ((pool eq null) || pool.isShutdown)
+      pool = buildExecutor()
+  }
 
   /**
    * Shut down the underlying <code>SingleThreadScheduledExecutor</code>
